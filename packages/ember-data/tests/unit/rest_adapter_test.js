@@ -4,6 +4,7 @@ var adapter, store, ajaxUrl, ajaxType, ajaxHash;
 var Person, person, people;
 var Role, role, roles;
 var Group, group;
+var Thing, thing;
 
 module("the REST adapter", {
   setup: function() {
@@ -60,6 +61,11 @@ module("the REST adapter", {
     Role.toString = function() {
       return "App.Role";
     };
+
+    Thing = DS.Model.extend({
+      name: DS.attr('string')
+    });
+
   },
 
   teardown: function() {
@@ -99,6 +105,17 @@ var expectStates = function(state, value) {
     expectState(state, value, person);
   });
 };
+
+test("creating a model with default settings makes a POST to /things", function() {
+  thing = store.createRecord(Thing, { name: "Something"});
+  console.log("Thing",thing);
+  //expectState('new');
+  store.commit();
+  //expectState('saving');
+
+  expectUrl("/things", "the collection at the plural of the model name");
+  //expectType("POST");
+});
 
 test("creating a person makes a POST to /people, with the data hash", function() {
   person = store.createRecord(Person, { name: "Tom Dale" });
